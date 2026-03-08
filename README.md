@@ -1,53 +1,80 @@
-## Project: Automated Azure SQL Schema Migration Pipeline
+# Azure DevOps: Web App Monitoring & Alerting 🛡️
 
-### 📌 Project Overview
+## Project Overview
 
-This project demonstrates a fully automated CI/CD approach to database schema management. By treating the database schema as code, this pipeline ensures that manual database updates are eliminated, reducing human error and ensuring environment consistency across the development lifecycle.
+This project demonstrates the implementation of a full-stack monitoring solution for a cloud-based web application. Using **Azure Application Insights** and **Azure Monitor**, I established a proactive observability framework that tracks application health, global availability, and real-time failure rates.
 
-### 🏗️ System Architecture
+### The Problem (Scenario)
 
-The architecture follows a modern DevOps pattern where the repository acts as the single source of truth for both infrastructure configuration and database state.
+How do we ensure a web application is "healthy" beyond just knowing the server is "on"? We need to know:
 
-1. **Source Control (GitHub/Azure Repos):** Stores the T-SQL migration scripts and the YAML pipeline definition.
-2. **Continuous Integration (Build Stage):** Validates the repository structure and packages the SQL scripts as a versioned build artifact.
-3. **Continuous Deployment (Release Stage):** * Retrieves the build artifacts.
-* Dynamically manages firewall access to the cloud database.
-* Executes the schema changes against the target Azure SQL instance.
+1. Is the site reachable from New York, London, and Tokyo?
+2. Are users experiencing internal code errors?
+3. Can the DevOps team be notified automatically before customers complain?
 
+---
 
-4. **Target Infrastructure:** A serverless Azure SQL Database instance.
-
-### 🛠️ Tech Stack & Tooling
+## Tech Stack
 
 * **Cloud Provider:** Microsoft Azure
-* **Database Engine:** Azure SQL (Logical Server & Serverless Database)
-* **Orchestration:** Azure Pipelines (YAML Multi-stage)
-* **Security:** Azure DevOps Library (Secret Variable Groups)
-* **Database Language:** T-SQL (Idempotent scripting)
+* **Hosting:** Azure App Service (Linux/Node.js)
+* **Monitoring:** Azure Application Insights
+* **Alerting:** Azure Monitor (Action Groups & Alert Rules)
+* **Telemetry:** Kusto Query Language (KQL)
 
-### 🚀 Key DevOps Features Implemented
+---
 
-#### 1. Idempotent Migrations
+## Project Phases
 
-The pipeline utilizes "Smart Scripts" that check the state of the database before execution. This ensures that the pipeline can be run repeatedly without causing errors or duplicate objects, a critical requirement for automated recovery and scaling.
+### Phase 1: Infrastructure Setup
 
-#### 2. Automated Firewall Management
+* Deployed a **Log Analytics Workspace** to act as the central data repository.
+* Provisioned an **App Service** to host the web application.
+* Created a **Workspace-based Application Insights** resource.
 
-To maintain a high security posture, the pipeline utilizes dynamic IP detection. It temporarily whitelists the hosted runner's IP address only for the duration of the deployment task, closing the connection immediately after completion.
+### Phase 2: Codeless Instrumentation
 
-#### 3. Secure Secret Management
+* Connected the Node.js application to Application Insights using **Auto-instrumentation**.
+* Configured Environment Variables (`APPLICATIONINSIGHTS_CONNECTION_STRING`) to enable telemetry collection without modifying the application source code.
+* **[INSERT SCREENSHOT: Live Metrics Stream showing request spikes]**
 
-Zero-trust security principles are applied by offloading sensitive credentials (SQL Admin passwords) to encrypted Variable Groups. This ensures that production secrets are never stored in plain text within the source code or visible in execution logs.
+### Phase 3: Global Availability Testing
 
-#### 4. Artifact Traceability
+* Configured a **Standard Availability Test** to "ping" the application URL every 5 minutes.
+* Selected 5 global test locations to ensure regional reachability.
+* Set up SSL certificate monitoring to alert if the site's security certificate is within 7 days of expiration.
+* **[INSERT SCREENSHOT: Availability Map with green/red status dots]**
 
-By using a multi-stage approach, the project separates the "Build" (packaging the scripts) from the "Deploy" (executing them). This creates a clear audit trail, allowing teams to see exactly which version of the code was deployed to the database at any given time.
+### Phase 4: Alerting & Incident Response
 
-### 📈 Real-World Application
+* Created an **Action Group** to route critical notifications to the DevOps team via email.
+* Established **Alert Rules**:
+* **High Failure Rate:** Triggers if more than 5 failed requests occur within 5 minutes.
+* **Downtime Alert:** Triggers if global availability drops below 90%.
 
-In a production environment, this workflow allows DevOps engineers to:
 
-* Perform "Dry Runs" of database changes before they hit production.
-* Synchronize database changes with application code deployments.
-* Maintain a history of all schema modifications for compliance and debugging.
+
+### Phase 5: Validation & Chaos Testing
+
+* Manually triggered a "High Error Rate" by generating 404 errors via the browser.
+* Simulated a "Site Down" event by stopping the App Service.
+* **Result:** Successfully received automated "Fired" and "Resolved" emails from Azure Monitor.
+* **[INSERT SCREENSHOT: The Alert email notification from your inbox]**
+
+---
+
+## Key Learnings
+
+* **Proactive vs. Reactive:** Learned how to set thresholds that notify engineers *before* an outage becomes critical.
+* **Global Perspective:** Understood that "Up" for me doesn't mean "Up" for a user in another continent.
+* **Cloud Governance:** Organized all resources within a single Resource Group for lifecycle management and cost tracking.
+
+---
+
+## How to View
+
+1. Navigate to the `/screenshots` folder to see the monitoring dashboards in action.
+2. The `deployment-notes.md` contains the specific Environment Variables used for Node.js instrumentation.
+
+---
 
