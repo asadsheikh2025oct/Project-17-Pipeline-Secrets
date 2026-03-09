@@ -17,13 +17,9 @@ variables:
   location: 'ukwest'
 
 stages:
-  - stage: vaultDeployment
-    jobs:
-    - job: DeployVaultJob
-      steps:
-      - task: AzureResourceManagerTemplateDeployment@3
-        inputs:
-          
-
-
-
+- stage: vaultDeployment
+  jobs:
+  - job: DeployVaultJob
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+    
