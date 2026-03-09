@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "7516316202845036886"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "vaultName": {
+      "type": "string",
+      "defaultValue": "[format('vault-project-{0}', uniqueString(resourceGroup().id))]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "name": "[parameters('vaultName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "standard",
+          "family": "A"
+        },
+        "tenantId": "[subscription().tenantId]",
+        "enableRbacAuthorization": true,
+        "enabledForTemplateDeployment": true
+      }
+    }
+  ],
+  "outputs": {
+    "vaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "setting up kv to be deployed via CICD pipeline"
+      },
+      "value": "[parameters('vaultName')]"
+    }
+  }
+}

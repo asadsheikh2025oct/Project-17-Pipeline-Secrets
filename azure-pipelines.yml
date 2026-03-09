@@ -1,0 +1,29 @@
+trigger: 
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - README.md
+      - '*.png'
+      - azure-pipelines.yml
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  serviceConnection: 'my-service-connection'
+  resourceGroup: 'my-resource-group'
+  location: 'ukwest'
+
+stages:
+  - stage: vaultDeployment
+    jobs:
+    - job: DeployVaultJob
+      steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        inputs:
+          
+
+
+
