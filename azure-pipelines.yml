@@ -11,12 +11,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  resourceGroup: $(resourceGroup)
-  location: $(location)
 
 stages:
-- stage: vaultDeployment
+- stage: validateAndDeploy
   jobs:
   - job: ValidationJob
     steps:
