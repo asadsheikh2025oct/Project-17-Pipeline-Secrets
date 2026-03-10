@@ -41,12 +41,13 @@ stages:
     dependsOn: ValidationJob
     condition: succeeded()
     environment: 'Production-Environment'
-    pool:
-      vmImage: 'ubuntu-latest'
     strategy:
       runOnce:
         deploy:
+          pool:
+            vmImage: 'ubuntu-latest'
           steps:
+            - checkout: self
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: 'Vault Deployment Step'
               inputs:
