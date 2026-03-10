@@ -24,7 +24,7 @@ stages:
     - task: AzureResourceManagerTemplateDeployment@3
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: $(serviceConnection)
+        azureResourceManagerConnection: 'new-sc-project-17'
         subscriptionId: $(subscriptionId)
         action: 'Create Or Update Resource Group'
         resourceGroupName: $(resourceGroup)
