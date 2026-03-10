@@ -22,13 +22,26 @@ stages:
   - job: DeployVaultJob
     steps:
     - task: AzureCLI@2
+      displayName: 'Bicep Linting'
       inputs:
         azureSubscription: 'new-sc-project-17'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: 'az bicep build --file main.bicep'
-        
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'new-sc-project-17'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az deployment group what-if \
+            --resource-group $(resourceGroup) \
+            --template-file main.bicep \
+            --parameters location=$(location)
+
     - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'Vault Deployment Step'
       inputs:
         deploymentScope: 'Resource Group'
         azureResourceManagerConnection: 'new-sc-project-17'
