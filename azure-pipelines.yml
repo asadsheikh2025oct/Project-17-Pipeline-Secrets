@@ -21,6 +21,13 @@ stages:
   jobs:
   - job: DeployVaultJob
     steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'new-sc-project-17'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az bicep build --file main.bicep'
+        
     - task: AzureResourceManagerTemplateDeployment@3
       inputs:
         deploymentScope: 'Resource Group'
