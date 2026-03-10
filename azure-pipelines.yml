@@ -12,9 +12,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  serviceConnection: 'my-service-connection'
-  resourceGroup: 'my-resource-group'
-  location: 'ukwest'
+  serviceConnection: $(serviceConnection)
+  resourceGroup: $(resourceGroup)
+  location: $(location)
 
 stages:
 - stage: vaultDeployment
@@ -22,4 +22,13 @@ stages:
   - job: DeployVaultJob
     steps:
     - task: AzureResourceManagerTemplateDeployment@3
-    
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: $(serviceConnection)
+        subscriptionId: $(subscriptionId)
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: $(resourceGroup)
+        location: $(location)
+        templateLocation: 'Linked artifact'
+        csmFile: 'main.bicep'
+        deploymentMode: 'Incremental' 
