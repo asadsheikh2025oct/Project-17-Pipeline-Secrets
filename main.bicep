@@ -1,5 +1,8 @@
 param location string = resourceGroup().location
-param vaultName string = 'vault-project-${uniqueString(resourceGroup().id)}'
+@description('The name of key vault')
+@minLength(3)
+@maxLength(24)
+param vaultName string = 'kv-${uniqueString(resourceGroup().id)}'
 
 resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: vaultName
