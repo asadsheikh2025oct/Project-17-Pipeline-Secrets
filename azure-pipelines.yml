@@ -12,14 +12,13 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  serviceConnection: $(serviceConnection)
   resourceGroup: $(resourceGroup)
   location: $(location)
 
 stages:
 - stage: vaultDeployment
   jobs:
-  - job: DeployVaultJob
+  - job: ValidationJob
     steps:
     - task: AzureCLI@2
       displayName: 'Bicep Linting'
@@ -40,15 +39,26 @@ stages:
             --template-file main.bicep \
             --parameters location=$(location)
 
-    - task: AzureResourceManagerTemplateDeployment@3
-      displayName: 'Vault Deployment Step'
-      inputs:
-        deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'new-sc-project-17'
-        subscriptionId: $(subscriptionId)
-        action: 'Create Or Update Resource Group'
-        resourceGroupName: $(resourceGroup)
-        location: $(location)
-        templateLocation: 'Linked artifact'
-        csmFile: 'main.bicep'
-        deploymentMode: 'Incremental' 
+  - deployment: Deployment
+    displayName: 'Deployment Job Starting'
+    dependsOn: ValidationJob
+    condition: succeeded()
+    environment: 'Production-Environment'
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureResourceManagerTemplateDeployment@3
+              displayName: 'Vault Deployment Step'
+              inputs:
+                deploymentScope: 'Resource Group'
+                azureResourceManagerConnection: 'new-sc-project-17'
+                subscriptionId: $(subscriptionId)
+                action: 'Create Or Update Resource Group'
+                resourceGroupName: $(resourceGroup)
+                location: $(location)
+                templateLocation: 'Linked artifact'
+                csmFile: 'main.bicep'
+                deploymentMode: 'Incremental'
