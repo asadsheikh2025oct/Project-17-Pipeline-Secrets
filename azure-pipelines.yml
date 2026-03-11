@@ -79,9 +79,5 @@ stages:
           RunAsPreJob: false
 
       - script: |
-         if [ -z "$(testsecret2)" ]; then
-          echo "##vso[task.logissue type=error]Secret is empty! Check permissions."
-          exit 1
-         else
-          echo "Connection successful. The secret value is retrieved as $(testsecret2)"
-          fi
+         echo "Listing secrets"
+         env | grep -i "secret" | cut -d= -f1
