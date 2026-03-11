@@ -13,7 +13,7 @@ pool:
 
 
 stages:
-- stage: validateAndDeploy
+- stage: Validate
   jobs:
   - job: ValidationJob
     steps:
@@ -36,17 +36,19 @@ stages:
             --template-file main.bicep \
             --parameters location=$(location)
 
-  - deployment: Deployment
-    displayName: 'Deployment Job Starting'
-    dependsOn: ValidationJob
-    condition: succeeded()
-    environment: 'Production-Environment'
-    strategy:
-      runOnce:
-        deploy:
-          pool:
-            vmImage: 'ubuntu-latest'
-          steps:
+- stage: Deploy
+  displayName: Deployment
+  dependsOn: Validate
+  condition: succeeded()
+  jobs:
+    - deployment: DeployKV
+      environment: 'Production-Environment'
+      strategy:
+        runOnce:
+          deploy:
+            pool:
+              vmImage: 'ubuntu-latest'
+            steps:
             - checkout: self
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: 'Vault Deployment Step'
@@ -60,3 +62,26 @@ stages:
                 templateLocation: 'Linked artifact'
                 csmFile: 'main.bicep'
                 deploymentMode: 'Incremental'
+
+- stage: FetchSecret
+  displayName: FetchSecret
+  dependsOn: Deploy
+  condition: succeeded()
+  jobs:
+    - job: FetchSecret
+      displayName: FetchingSecret
+      steps:
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: 'new-sc-project-17'
+          KeyVaultName: $(kvName)
+          SecretsFilter: 'test-secret'
+          RunAsPreJob: false
+
+      - script: |
+        if [ -z "$(test-secret)" ]; then
+          echo "##vso[task.logissue type=error]Secret is empty! Check permissions."
+          exit 1
+        else
+          echo "Connection successful. The secret value is retrieved as $(test-secret)"
+        fi
