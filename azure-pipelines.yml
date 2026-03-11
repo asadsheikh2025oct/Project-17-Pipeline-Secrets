@@ -75,7 +75,7 @@ stages:
         inputs:
           azureSubscription: 'new-sc-project-17'
           KeyVaultName: $(kvName)
-          SecretsFilter: 'testsecret2'
+          SecretsFilter: '*'
           RunAsPreJob: false
 
       - script: |
