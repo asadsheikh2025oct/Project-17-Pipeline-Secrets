@@ -75,13 +75,13 @@ stages:
         inputs:
           azureSubscription: 'new-sc-project-17'
           KeyVaultName: $(kvName)
-          SecretsFilter: 'test-secret'
+          SecretsFilter: 'testsecret2'
           RunAsPreJob: false
 
       - script: |
-         if [ -z "$(test-secret)" ]; then
+         if [ -z "$(testsecret2)" ]; then
           echo "##vso[task.logissue type=error]Secret is empty! Check permissions."
           exit 1
          else
-          echo "Connection successful. The secret value is retrieved as $(test-secret)"
+          echo "Connection successful. The secret value is retrieved as $(testsecret2)"
           fi
