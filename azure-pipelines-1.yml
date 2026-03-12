@@ -1,0 +1,29 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - '*.yml'
+  
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: FetchSecret
+  displayName: FetchSecret
+  jobs:
+    - job: FetchSecret
+      displayName: FetchingSecret
+      steps:
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: 'new-sc-project-17'
+          KeyVaultName: $(kvName)
+          SecretsFilter: '*'
+          RunAsPreJob: false
+      
+      - script: |
+         echo "Listing secrets"
+         env | grep -i "secret" | cut -d= -f1
