@@ -30,6 +30,6 @@ stages:
          # env | grep -i "secret" | cut -d= -f1
 
       - script: |
-          echo "The secret was found and has a length of: ${#SECRET_VALUE}"
           env:
             SECRET_VALUE: $(test1)
+          echo "The secret was found and has a length of: ${#SECRET_VALUE}"
