@@ -20,10 +20,11 @@ stages:
       - task: AzureKeyVault@2
         inputs:
           azureSubscription: 'new-sc-project-17'
-          KeyVaultName: $(kvName)
-          SecretsFilter: '*'
+          KeyVaultName: '$(kvName)'
+          SecretsFilter: 'test1'
           RunAsPreJob: false
       
       - script: |
          echo "Listing secrets"
-         env | grep -i "secret" | cut -d= -f1
+         echo '$(test1)'
+         # env | grep -i "secret" | cut -d= -f1
