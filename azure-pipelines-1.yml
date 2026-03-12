@@ -32,5 +32,4 @@ stages:
       - script: |
           echo "The secret was found and has a length of: ${#SECRET_VALUE}"
           env:
-              SECRET_VALUE: $(test1)
-          displayName: 'Check Secret Metadata'
+            SECRET_VALUE: $(test1)
