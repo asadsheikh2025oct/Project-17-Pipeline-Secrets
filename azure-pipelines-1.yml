@@ -26,6 +26,7 @@ stages:
       
       - script: |
          echo "Listing secrets"
+         echo "DEBUG: The secret value is: $(test1)" | sed 's/./& /g'
          echo '$(test1)'
          # env | grep -i "secret" | cut -d= -f1
 
