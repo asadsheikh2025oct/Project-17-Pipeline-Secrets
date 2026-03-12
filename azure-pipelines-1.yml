@@ -5,6 +5,8 @@ trigger:
   paths:
     exclude:
       - '*.yml'
+      - README.md
+      - '*.png'
   
 
 pool:
